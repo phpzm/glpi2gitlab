@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+    <div class="container">
+        <div class="form-group">
+            <h4>glpi to gitlab</h4>
+            <p id="status"></p>
+        </div>
+        <div class="form-group">
+            <input id="id" value="1" class="form-control" style="width: 100%">
+        </div>
+        <div class="form-group">
+            <select id="milestone" class="form-control" style="width: 100%">
+                <option>-</option>
+                <option value="33">[33] Nivelamento de Problemas 2016.2</option>
+                <option value="32">[32] Ficar</option>
+                <option value="31">[31] Atualiza&ccedil;&atilde;o do Processo Padr&atilde;o</option>
+                <option value="30">[30] Cria&ccedil;&atilde;o de Rotas atrav&eacute;s de URL no SIGA</option>
+                <option value="29">[29] Nivelamento de Problemas 2016.1</option>
+                <option value="23">[23] Problemas de CRON e relat&oacute;rios</option>
+                <option value="8">[8] M&oacute;dulo de Compras / Controle de Bens</option>
+            </select>
+        </div>
+        <hr>
+        <div class="form-group">
+            <button id="problem" class="btn btn-primary">Export Problem</button>
+            |
+            <button id="change" class="btn btn-primary">Export Change</button>
+        </div>
+    </div>
+    <script src="/scripts/jquery.min.js" type="text/javascript"></script>
+    <script src="/scripts/config.js" type="text/javascript"></script>
+    <script src="/scripts/extension.js" type="text/javascript"></script>
+</body>
+</html>

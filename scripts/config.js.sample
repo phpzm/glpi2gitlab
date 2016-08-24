@@ -1,0 +1,4 @@
+
+const URL = 'http://gitlab.example.com/api/v3/projects/:id/issues';
+
+const PK = ''
