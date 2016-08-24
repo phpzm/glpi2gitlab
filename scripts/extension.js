@@ -3,9 +3,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     $('#status').html("Extension loaded");
 
-    document.getElementById('problem').addEventListener('click', exportProblem);
+    $('#problem').on('click', exportProblem);
 
-    document.getElementById('change').addEventListener('click', exportChange);
+    $('#change').on('click', exportChange);
 
     const $milestone = $('#milestone');
     MILESTONES.forEach(function (milestone) {
