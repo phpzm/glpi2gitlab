@@ -1,4 +1,15 @@
 
 const URL = 'http://gitlab.example.com/api/v3/projects/:id/issues';
 
-const PK = ''
+const PK = '';
+
+const PROJECT = 1;
+
+const MILESTONES = [
+    {
+        id: '1',
+        title: 'Default',
+        selected: true,
+        hide: false
+    }
+];

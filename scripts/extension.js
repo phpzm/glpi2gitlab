@@ -1,34 +1,48 @@
 
 document.addEventListener('DOMContentLoaded', function() {
 
-    const $status = $('#status');
-
-    $status.html("Extension loaded");
+    $('#status').html("Extension loaded");
 
     document.getElementById('problem').addEventListener('click', exportProblem);
 
     document.getElementById('change').addEventListener('click', exportChange);
 
-    function exportProblem()
-    {
-        exportIssue('problem');
-    }
+    const $milestone = $('#milestone');
+    MILESTONES.forEach(function (milestone) {
+        if (!milestone.hide) {
+            $milestone.append(
+                '<option value="' + milestone.id + '">'
+                + '[' + milestone.id + '] ' + milestone.title +
+                '</option>'
+            );
+        }
+    });
+});
 
-    function exportChange()
-    {
-        exportIssue('change');
-    }
 
-    function exportIssue (type)
-    {
-        const milestone_id = $('#milestone').val();
-        const id = $('#id').val();
+function exportProblem()
+{
+    exportIssue('problem');
+}
 
-        const query = {active: true, currentWindow: true};
+function exportChange()
+{
+    exportIssue('change');
+}
 
-        $status.html('Sending to gitlab');
+function exportIssue (type)
+{
+    const milestone_id = $('#milestone').val();
+    const id = PROJECT;
+    const $status = $('#status');
 
-        const save = function(results) {
+    const query = {active: true, currentWindow: true};
+
+    $status.html('Sending to gitlab');
+
+    const save = function(results) {
+
+        if (results.length) {
 
             const data = results[0];
             const letter = type === 'problem' ? 'P' : 'M';
@@ -51,21 +65,20 @@ document.addEventListener('DOMContentLoaded', function() {
                         $status.html("Done!");
                     }
             });
-        };
+        }
+    };
 
-        chrome.tabs.query(query, function(tabs) {
-            const
-                tab = tabs[0],
-                url = tab.url;
+    chrome.tabs.query(query, function(tabs) {
+        const
+            tab = tabs[0],
+            url = tab.url;
 
-            chrome.tabs.executeScript(tab.id, {
-                code:
-                '[document.querySelector(\'[name="id"]\').value , '
-                + 'document.querySelector(\'[name="name"]\').value, '
-                + 'document.querySelector(\'[name="content"]\').value, '
-                + ']'
-            }, save);
-        });
-    }
-
-});
+        chrome.tabs.executeScript(tab.id, {
+            code:
+            '[document.querySelector(\'[name="id"]\').value , '
+            + 'document.querySelector(\'[name="name"]\').value, '
+            + 'document.querySelector(\'[name="content"]\').value, '
+            + ']'
+        }, save);
+    });
+}
