@@ -50,14 +50,15 @@ function exportIssue (type)
             const issue = {
                 id: id,
                 title: prefix + data[1],
-                description: data[2],
+                description: data[2] +
+                    '\n\n----\n[[View it on GLPI](' + URL_GLPI.replace(':id', data[0]).replace(':type', type) + ')]',
                 milestone_id: milestone_id,
                 labels: type
             };
 
             $.ajax({
                     method: 'POST',
-                    url: URL.replace(':id', id),
+                    url: URL_GITLAB.replace(':id', id),
                     data: issue,
                     beforeSend: function(xhr) {
                          xhr.setRequestHeader("PRIVATE-TOKEN", PK)

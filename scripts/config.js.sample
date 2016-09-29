@@ -1,5 +1,7 @@
 
-const URL = 'http://gitlab.example.com/api/v3/projects/:id/issues';
+const URL_GITLAB = 'http://gitlab.example.com/api/v3/projects/:id/issues';
+
+const URL_GLPI = 'http://glpi.example.com/front/:type.form.php?id=:id';
 
 const PK = '';
 
