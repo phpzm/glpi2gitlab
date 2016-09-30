@@ -8,15 +8,41 @@ document.addEventListener('DOMContentLoaded', function() {
     $('#change').on('click', exportChange);
 
     const $milestone = $('#milestone');
-    MILESTONES.forEach(function (milestone) {
-        if (!milestone.hide) {
-            $milestone.append(
-                '<option value="' + milestone.id + '">'
-                + '[' + milestone.id + '] ' + milestone.title +
-                '</option>'
-            );
-        }
-    });
+    const id = PROJECT;
+    const populate = function(milestones) {
+        milestones.forEach(function (milestone) {
+            if (milestone.state === 'active') {
+                $milestone.append(
+                    '<option value="' + milestone.id + '">'
+                    + '[' + milestone.id + '] ' + milestone.title + ' '
+                    + (milestone.description ?
+                        (milestone.description.substring(0, 30).replace(new RegExp('#', 'g'), '')).trim() +
+                        (milestone.description.length > 30 ? '...' : '')
+                        :
+                        ''
+                      ) +
+                    '</option>'
+                );
+            }
+        });
+    };
+
+    if (MILESTONES.length) {
+
+        populate(MILESTONES);
+
+    } else {
+
+        $.ajax({
+            method: 'GET',
+            url: URL_GITLAB.replace(':id', id).replace(':resource', 'milestones') + '?state=active',
+            beforeSend: function(xhr) {
+                 xhr.setRequestHeader("PRIVATE-TOKEN", PK)
+            }, success: function(data) {
+                populate(data);
+            }
+        });
+    }
 });
 
 
@@ -43,6 +69,7 @@ function exportIssue (type)
     const save = function(results) {
 
         if (results.length) {
+            // && confirm('Deseja exportar esse recurso para a "Milestone ' + milestone_id + '"')
 
             const data = results[0];
             const letter = type === 'problem' ? 'P' : 'M';
@@ -58,7 +85,7 @@ function exportIssue (type)
 
             $.ajax({
                     method: 'POST',
-                    url: URL_GITLAB.replace(':id', id),
+                    url: URL_GITLAB.replace(':id', id).replace(':resource', 'issues'),
                     data: issue,
                     beforeSend: function(xhr) {
                          xhr.setRequestHeader("PRIVATE-TOKEN", PK)
