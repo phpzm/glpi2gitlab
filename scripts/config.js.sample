@@ -1,17 +1,10 @@
 
-const URL_GITLAB = 'http://gitlab.example.com/api/v3/projects/:id/issues';
+const URL_GITLAB = 'http://gitlab.example.com/api/v3/projects/:id/:resources';
 
 const URL_GLPI = 'http://glpi.example.com/front/:type.form.php?id=:id';
 
-const PK = '';
+const PK = 'private-key'; //pegar no gitlab
 
-const PROJECT = 1;
+const PROJECT = 1; //Projeto
 
-const MILESTONES = [
-    {
-        id: '1',
-        title: 'Default',
-        selected: true,
-        hide: false
-    }
-];
+const MILESTONES = []; //vai pegar do Gitlab usando sua PK
