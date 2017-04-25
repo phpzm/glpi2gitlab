@@ -58,7 +58,7 @@ function exportChange()
 
 function exportIssue (type)
 {
-    const milestone_id = $('#milestone').val();
+    const milestone_id = Number($('#milestone').val());
     const label = $('#label').val();
     const id = PROJECT;
     const $status = $('#status');
@@ -80,9 +80,11 @@ function exportIssue (type)
                 title: prefix + data[1],
                 description: data[2] +
                     '\n\n----\n[[View it on GLPI](' + URL_GLPI.replace(':id', data[0]).replace(':type', type) + ')]',
-                milestone_id: milestone_id,
                 labels: type + (label ? ',' + label : '')
             };
+            if (milestone_id) {
+                issue.milestone_id = milestone_id;
+            }
 
             $.ajax({
                     method: 'POST',
