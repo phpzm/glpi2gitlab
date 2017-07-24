@@ -7,39 +7,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
     $('#change').on('click', exportChange);
 
-    const $milestone = $('#milestone');
-    const id = PROJECT;
-    const populate = function(milestones) {
-        milestones.forEach(function (milestone) {
-            if (milestone.state === 'active') {
-                $milestone.append(
-                    '<option value="' + milestone.id + '">'
-                    + '[' + milestone.id + '] ' + milestone.title + ' '
-                    + (milestone.description ?
-                        (milestone.description.substring(0, 30).replace(new RegExp('#', 'g'), '')).trim() +
-                        (milestone.description.length > 30 ? '...' : '')
-                        :
-                        ''
-                      ) +
-                    '</option>'
-                );
-            }
+    $('#project').on('change', selectProject);
+
+    const $project = $('#project');
+    const populateProjects = function(projects) {
+        projects.forEach(function (project) {
+            $project.append(
+                '<option value="' + project.id + '">'
+                + '[' + project.id + '] ' + project.name + ' ' +
+                '</option>'
+            );
         });
     };
 
-    if (MILESTONES.length) {
+    if (PROJECTS.length) {
 
-        populate(MILESTONES);
+        populateProjects(PROJECTS);
 
     } else {
 
         $.ajax({
             method: 'GET',
-            url: URL_GITLAB.replace(':id', id).replace(':resource', 'milestones') + '?state=active',
+            url: URL_GITLAB.replace('/:id/:resource', '') + '?order_by=id&sort=asc',
             beforeSend: function(xhr) {
-                 xhr.setRequestHeader("PRIVATE-TOKEN", PK)
+                xhr.setRequestHeader("PRIVATE-TOKEN", PK)
             }, success: function(data) {
-                populate(data);
+                populateProjects(data);
             }
         });
     }
@@ -56,11 +49,51 @@ function exportChange()
     exportIssue('change');
 }
 
+function selectProject()
+{
+    const $milestone = $('#milestone').html('');
+    const id = $('#project option:selected').val();
+    const populateMilestones = function(milestones) {
+        milestones.forEach(function (milestone) {
+            if (milestone.state === 'active') {
+                $milestone.append(
+                    '<option value="' + milestone.id + '">'
+                    + '[' + milestone.id + '] ' + milestone.title + ' '
+                    + (milestone.description ?
+                            (milestone.description.substring(0, 30).replace(new RegExp('#', 'g'), '')).trim() +
+                            (milestone.description.length > 30 ? '...' : '')
+                            :
+                            ''
+                    ) +
+                    '</option>'
+                );
+            }
+        });
+    };
+
+    if (MILESTONES.length) {
+
+        populateMilestones(MILESTONES);
+
+    } else {
+
+        $.ajax({
+            method: 'GET',
+            url: URL_GITLAB.replace(':id', id).replace(':resource', 'milestones') + '?state=active',
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader("PRIVATE-TOKEN", PK)
+            }, success: function(data) {
+                populateMilestones(data);
+            }
+        });
+    }
+}
+
 function exportIssue (type)
 {
     const milestone_id = $('#milestone').val();
     const label = $('#label').val();
-    const id = PROJECT;
+    const id = $('#project option:selected').val();
     const $status = $('#status');
 
     const query = {active: true, currentWindow: true};
@@ -80,9 +113,12 @@ function exportIssue (type)
                 title: prefix + data[1],
                 description: data[2] +
                     '\n\n----\n[[View it on GLPI](' + URL_GLPI.replace(':id', data[0]).replace(':type', type) + ')]',
-                milestone_id: milestone_id,
                 labels: type + (label ? ',' + label : '')
             };
+
+            if (milestone_id !== '-') {
+                issue.milestone_id = milestone_id;
+            }
 
             $.ajax({
                     method: 'POST',
