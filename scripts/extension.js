@@ -91,7 +91,7 @@ function selectProject()
 
 function exportIssue (type)
 {
-    const milestone_id = $('#milestone').val();
+    const milestone_id = Number($('#milestone').val());
     const label = $('#label').val();
     const id = $('#project option:selected').val();
     const $status = $('#status');
@@ -115,6 +115,9 @@ function exportIssue (type)
                     '\n\n----\n[[View it on GLPI](' + URL_GLPI.replace(':id', data[0]).replace(':type', type) + ')]',
                 labels: type + (label ? ',' + label : '')
             };
+            if (milestone_id) {
+                issue.milestone_id = milestone_id;
+            }
 
             if (milestone_id !== '-') {
                 issue.milestone_id = milestone_id;
